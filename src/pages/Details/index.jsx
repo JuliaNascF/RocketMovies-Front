@@ -1,8 +1,9 @@
 import { FiArrowLeft, FiClock } from 'react-icons/fi'
+import { useState, useEffect } from "react";
 
-import { Link } from 'react-router-dom'; 
 
-
+import { useParams, useNavigate } from "react-router-dom";
+import { api } from "../../services/api.js";
 
 import { Container, Tagline, HeaderMovie, Content } from "./styles"
 
@@ -11,56 +12,117 @@ import { Header } from '../../components/Header'
 import { Tag } from '../../components/Tag'
 import { Rating } from '../../components/Rating'
 
+import { useAuth } from '../../hooks/auth'
+
+import avatarPlaceholder from '../../assets/avatar_placeholder.svg'
 
 
 
-export function Details(){
+export function Details (){
+  const { user } =  useAuth();
+  const [data, setData] = useState("");
+  const [dateFormatted, setDateFormatted] = useState(null);
+  const params = useParams();
+  const navigate = useNavigate();
+
+  function handleBack(){
+    navigate(-1);
+  }
+
+ async function handleRemove(){
+    const confirm = window.confirm("Deseja realmente remover a nota?")
+    if(confirm){
+     await api.delete(`/notes/${params.id}`);
+     navigate(-1);
+    }
+  }
+
+
+  useEffect(()=> {
+   async function fetchNote(){
+    const response = await api.get(`/notes/${params.id}`);
+    setData(response.data)
+   }
+
+   fetchNote();
+
+  }, [])
+
+  useEffect(() => {
+    if (data.updated_at) {
+      const initialFormat = data.updated_at;
+
+      const [date, hour] = initialFormat.split(" ");
+
+      const [year, month, day] = date.split("-");
+
+      const [hours, minutes] = hour.split(":");
+
+      setDateFormatted({
+        date: `${day}/${month}/${year}`,
+        hour: `${hours - 3}:${minutes}`,
+      });
+    }
+  }, [data]);
+
+
+  const avatarUrl = user.avatar ? `${api.defaults.baseURL}/files/${user.avatar}`: avatarPlaceholder;
+
+
     return (
         <Container>
       <Header />
 
+{
+
+
       <main>
         <Content>
           
-          <Link to="/">
-            <ButtonText title='Voltar' icon={FiArrowLeft} />
-          </Link>
+            <div className="buttonText">
+
+            <ButtonText onClick = {handleBack} title='Voltar' icon={FiArrowLeft} />
+            <ButtonText onClick={handleRemove} title= "Excluir Filme"/>
+            </div>
+         
           
           <HeaderMovie>
             
             <div className='TitleRating'>
-            <h1>Interestellar</h1>
-              <Rating></Rating>
+            <h1> {data.title} </h1>
+              <Rating grade={data.rating} isBigSize/>
             </div>
 
             <div className='UserData'>
-              <img src="http://github.com/JuliaNascF.png" alt="Foto do Usuário da nota" />
-              <span>Por Júlia Nascimento</span>
+              <img src={ avatarUrl } alt="Foto do Usuário da nota" />
+              <span>Por {user.name}</span> 
               <FiClock />
-              <span>27/12/22 às 18:00</span>
+              {dateFormatted && (
+                  <span>
+                    {dateFormatted.date} ás {dateFormatted.hour}
+                  </span>
+                    )}
             </div>
 
           </HeaderMovie>
 
 
           <Tagline>
-            <Tag title="Ficção Cientifica"/>
-            <Tag title="Drama"/>
-            <Tag title="Familia"/>
+          {data.tags && data.tags.map(tag => (
+    <Tag key={tag.id} title={tag.name} />
+  ))}
           </Tagline>
 
          <p>
 
-          Pragas nas colheitas fizeram a civilização humana regredir para uma sociedade agrária em futuro de data desconhecida. Cooper, ex-piloto da NASA, tem uma fazenda com sua família. Murphy, a filha de dez anos de Cooper, acredita que seu quarto está assombrado por um fantasma que tenta se comunicar com ela. Pai e filha descobrem que o "fantasma" é uma inteligência desconhecida que está enviando mensagens codificadas através de radiação gravitacional, deixando coordenadas em binário que os levam até uma instalação secreta da NASA liderada pelo professor John Brand. O cientista revela que um buraco de minhoca foi aberto perto de Saturno e que ele leva a planetas que podem oferecer condições de sobrevivência para a espécie humana. As "missões Lázaro" enviadas anos antes identificaram três planetas potencialmente habitáveis orbitando o buraco negro Gargântua: Miller, Edmunds e Mann - nomeados em homenagem aos astronautas que os pesquisaram. Brand recruta Cooper para pilotar a nave espacial Endurance e recuperar os dados dos astronautas; se um dos planetas se mostrar habitável, a humanidade irá seguir para ele na instalação da NASA, que é na realidade uma enorme estação espacial. A partida de Cooper devasta Murphy.
+         {data.description}
          </p>
          
-         <p>
-
-          Além de Cooper, a tripulação da Endurance é formada pela bióloga Amelia, filha de Brand; o cientista Romilly, o físico planetário Doyle, além dos robôs TARS e CASE. Eles entram no buraco de minhoca e se dirigem a Miller, porém descobrem que o planeta possui enorme dilatação gravitacional temporal por estar tão perto de Gargântua: cada hora na superfície equivale a sete anos na Terra. Eles entram em Miller e descobrem que é inóspito já que é coberto por um oceano raso e agitado por ondas enormes. Uma onda atinge a tripulação enquanto Amelia tenta recuperar os dados de Miller, matando Doyle e atrasando a partida. Ao voltarem para a Endurance, Cooper e Amelia descobrem que 23 anos se passaram.
-         </p>
+        
         
         </Content>
       </main>
+      }
     </Container>
     )
 }

@@ -1,20 +1,18 @@
 import { AiOutlineStar, AiTwotoneStar } from 'react-icons/ai'
 import { Container } from './styles'
 
-export function Rating({ rate }) {
-  const stars = []
-
-  for (let i = 0; i < 5; i++) {
-    let star = i < rate ? AiTwotoneStar :  AiOutlineStar
-
-    stars.push(star)
+export function Rating( { grade, isBigSize} ) {
+    let stars = [];
+  for (let cont = 1; cont <= 5; cont++) {
+    if (cont <= grade) {
+      stars.push(<AiTwotoneStar key={cont} />);
+    } else {
+      stars.push(<AiOutlineStar key={cont} />);
+    }
   }
 
   return (
-    <Container>
-      {stars.map((Star, i) => (
-        <Star key={i} />
-      ))}
-    </Container>
+    <Container risBigSize={isBigSize}>{stars}
+  </Container>
   )
 }

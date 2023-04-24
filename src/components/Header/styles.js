@@ -51,7 +51,9 @@ align-items: center;
      margin-right:16px;
      line-height: 24px;
 
-     span{
+     button{
+        background:none;
+        border: none;
         font-size: 14px;
         color : ${({ theme }) => theme.COLORS.GRAY_100};
         display: flex;

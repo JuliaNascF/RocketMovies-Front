@@ -24,6 +24,11 @@ export const Container = styled.div`
     p{
         margin-bottom: 15px
     }
+
+    .buttonText{
+      display: flex;
+      justify-content: space-between;
+    }
   }
 `;
 

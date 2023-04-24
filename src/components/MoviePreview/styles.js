@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
+ cursor: pointer;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -12,9 +13,14 @@ export const Container = styled.div`
     margin-bottom: 8px;
   }
   > p {
+    
     margin-top: 15px;
     margin-bottom: 15px;
   }
 `;
 
-export const Tagline = styled.div``;
+export const Tagline = styled.div`
+ display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+`;
