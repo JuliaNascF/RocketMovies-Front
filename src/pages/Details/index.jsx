@@ -1,5 +1,6 @@
 import { FiArrowLeft, FiClock } from 'react-icons/fi'
 import { useState, useEffect } from "react";
+import moment from 'moment';
 
 
 import { useParams, useNavigate } from "react-router-dom";
@@ -51,16 +52,10 @@ export function Details (){
   useEffect(() => {
     if (data.updated_at) {
       const initialFormat = data.updated_at;
-
-      const [date, hour] = initialFormat.split(" ");
-
-      const [year, month, day] = date.split("-");
-
-      const [hours, minutes] = hour.split(":");
-
+      const momentDate = moment(initialFormat).subtract(3, 'hours');
       setDateFormatted({
-        date: `${day}/${month}/${year}`,
-        hour: `${hours - 3}:${minutes}`,
+        date: momentDate.format('DD/MM/YYYY'),
+        hour: momentDate.format('HH:mm'),
       });
     }
   }, [data]);
