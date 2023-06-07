@@ -3,6 +3,7 @@
 
 RocketMovies is a React project that allows users to create and manage movie entries. Users can fill in details such as the movie name, description, and rating, as well as add tags related to the movie. The project leverages styled components, routes, and Multer library to handle user profile picture uploads.
 ## Showing
+![Peek 07-06-2023 16-01](https://github.com/JuliaNascF/RocketMovies-Front/assets/118016226/014b24e2-7b93-44c5-a6a0-022dd7e3859a)
 
 
 
@@ -16,7 +17,7 @@ RocketMovies is a React project that allows users to create and manage movie ent
 
 ## Deploy
 
-You can test the app here: https://budega-e-commerce-front.vercel.app
+You can test the app here:https://rocketmovie-aplication.netlify.app/
 
 
 
